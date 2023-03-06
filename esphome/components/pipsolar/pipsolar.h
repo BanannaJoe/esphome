@@ -52,7 +52,7 @@ struct PollingCommand {
 #define PIPSOLAR_TEXT_SENSOR(name, polling_command) PIPSOLAR_ENTITY_(text_sensor::TextSensor, name, polling_command)
 
 class Pipsolar : public uart::UARTDevice, public PollingComponent {
-  // ^P005GS values
+  // P005GS values
   PIPSOLAR_SENSOR(grid_voltage, P005GS, float)
   PIPSOLAR_SENSOR(grid_frequency, P005GS, float)
   PIPSOLAR_SENSOR(ac_output_voltage, P005GS, float)
