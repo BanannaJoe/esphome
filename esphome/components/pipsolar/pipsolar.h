@@ -13,7 +13,7 @@ namespace pipsolar {
 
 enum ENUMPollingCommand {
   POLLING_QPIRI = 0,
-  POLLING_QPIGS = 1,
+  POLLING_P005GS = 1,
   POLLING_QMOD = 2,
   POLLING_QFLAG = 3,
   POLLING_QPIWS = 4,
