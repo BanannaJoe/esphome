@@ -82,7 +82,7 @@ class Pipsolar : public uart::UARTDevice, public PollingComponent {
   PIPSOLAR_SENSOR(pv_charging_power, P005GS, int)
   PIPSOLAR_BINARY_SENSOR(charging_to_floating_mode, P005GS, int)
   PIPSOLAR_BINARY_SENSOR(switch_on, P005GS, int)
-  PIPSOLAR_BINARY_SENSOR(dustproof_installed, P005GS int)
+  PIPSOLAR_BINARY_SENSOR(dustproof_installed, P005GS, int)
 
   // QPIRI values
   PIPSOLAR_SENSOR(grid_rating_voltage, QPIRI, float)
