@@ -163,7 +163,7 @@ class Pipsolar : public uart::UARTDevice, public PollingComponent {
   PIPSOLAR_BINARY_SENSOR(warning_high_ac_input_during_bus_soft_start, QPIWS, bool)
   PIPSOLAR_BINARY_SENSOR(warning_battery_equalization, QPIWS, bool)
 
-  PIPSOLAR_TEXT_SENSOR(last_P005GS, P005GS)
+  PIPSOLAR_TEXT_SENSOR(last_p005gs, P005GS)
   PIPSOLAR_TEXT_SENSOR(last_qpiri, QPIRI)
   PIPSOLAR_TEXT_SENSOR(last_qmod, QMOD)
   PIPSOLAR_TEXT_SENSOR(last_qflag, QFLAG)
