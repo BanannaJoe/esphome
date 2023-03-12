@@ -169,7 +169,7 @@ void Pipsolar::loop() {
         }
         this->state_ = STATE_IDLE;
         break;
-      case POLLING_QPIGS:
+      case POLLING_P005GS:
         if (this->grid_voltage_) {
           this->grid_voltage_->publish_state(value_grid_voltage_);
         }
@@ -444,7 +444,7 @@ void Pipsolar::loop() {
         }
         this->state_ = STATE_POLL_DECODED;
         break;
-      case POLLING_QPIGS:
+      case POLLING_P005GS:
         ESP_LOGD(TAG, "Decode QPIGS");
         sscanf(                                                                                              // NOLINT
             tmp,                                                                                             // NOLINT
