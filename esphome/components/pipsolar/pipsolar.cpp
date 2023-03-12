@@ -169,7 +169,7 @@ void Pipsolar::loop() {
         }
         this->state_ = STATE_IDLE;
         break;
-      case POLLING_P005GS:
+      case POLLING_QPIGS:
         if (this->grid_voltage_) {
           this->grid_voltage_->publish_state(value_grid_voltage_);
         }
@@ -444,8 +444,8 @@ void Pipsolar::loop() {
         }
         this->state_ = STATE_POLL_DECODED;
         break;
-      case POLLING_P005GS:
-        ESP_LOGD(TAG, "Decode P005GS");
+      case POLLING_QPIGS:
+        ESP_LOGD(TAG, "Decode QPIGS");
         sscanf(                                                                                              // NOLINT
             tmp,                                                                                             // NOLINT
             "(%f %f %f %f %d %d %d %d %f %d %d %d %d %f %f %d %1d%1d%1d%1d%1d%1d%1d%1d %d %d %d %1d%1d%1d",  // NOLINT
@@ -462,8 +462,8 @@ void Pipsolar::loop() {
             &value_battery_voltage_offset_for_fans_on_, &value_eeprom_version_, &value_pv_charging_power_,   // NOLINT
             &value_charging_to_floating_mode_, &value_switch_on_,                                            // NOLINT
             &value_dustproof_installed_);                                                                    // NOLINT
-        if (this->last_p005gs_) {
-          this->last_p005gs_->publish_state(tmp);
+        if (this->last_qpigs_) {
+          this->last_qpigs_->publish_state(tmp);
         }
         this->state_ = STATE_POLL_DECODED;
         break;
