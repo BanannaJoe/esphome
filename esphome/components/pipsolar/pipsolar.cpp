@@ -869,7 +869,7 @@ void Pipsolar::update() {}
 
 void Pipsolar::add_polling_command_(const char *command, ENUMPollingCommand polling_command) {
   for (auto &used_polling_command : this->used_polling_commands_) {
-    used_polling_command.insert(1,"^");
+    used_polling_command.command.insert(1,"^");
     if (used_polling_command.length == strlen(command)) {
       uint8_t len = strlen(command);
       if (memcmp(used_polling_command.command, command, len) == 0) {
