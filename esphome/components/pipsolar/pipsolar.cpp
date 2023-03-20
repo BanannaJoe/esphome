@@ -69,7 +69,7 @@ void Pipsolar::loop() {
   if (this->state_ == STATE_POLL_DECODED) {
     std::string mode;
     switch (this->used_polling_commands_[this->last_polling_command_].identifier) {
-      case POLLING_QPIRI:
+      case POLLING_P007PIRI:
         if (this->grid_rating_voltage_) {
           this->grid_rating_voltage_->publish_state(value_grid_rating_voltage_);
         }
@@ -169,7 +169,7 @@ void Pipsolar::loop() {
         }
         this->state_ = STATE_IDLE;
         break;
-      case POLLING_P005GS:
+      case POLLING_QPIGS:
         if (this->grid_voltage_) {
           this->grid_voltage_->publish_state(value_grid_voltage_);
         }
@@ -425,9 +425,9 @@ void Pipsolar::loop() {
     char tmp[PIPSOLAR_READ_BUFFER_LENGTH];
     sprintf(tmp, "%s", this->read_buffer_);
     switch (this->used_polling_commands_[this->last_polling_command_].identifier) {
-      case POLLING_QPIRI:
-        ESP_LOGD(TAG, "Decode QPIRI");
-        sscanf(tmp, "(%f %f %f %f %f %d %d %f %f %f %f %f %d %d %d %d %d %d %d %d %d %d %f %d %d",          // NOLINT
+      case POLLING_P007PIRI:
+        ESP_LOGD(TAG, "Decode P007PIRI");
+        sscanf(tmp, "^D0882300,%f,%f,%f,%f,%f,%d,%d,%f,%f,%f,%f,%f,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%d,%d",          // NOLINT
                &value_grid_rating_voltage_, &value_grid_rating_current_, &value_ac_output_rating_voltage_,  // NOLINT
                &value_ac_output_rating_frequency_, &value_ac_output_rating_current_,                        // NOLINT
                &value_ac_output_rating_apparent_power_, &value_ac_output_rating_active_power_,              // NOLINT
@@ -444,11 +444,11 @@ void Pipsolar::loop() {
         }
         this->state_ = STATE_POLL_DECODED;
         break;
-      case POLLING_P005GS:
+      case POLLING_QPIGS:
         ESP_LOGD(TAG, "Decode QPIGS");
         sscanf(                                                                                              // NOLINT
             tmp,                                                                                             // NOLINT
-            "(%f %f %f %f %d %d %d %d %f %d %d %d %d %f %f %d %1d%1d%1d%1d%1d%1d%1d%1d %d %d %d %1d%1d%1d",  // NOLINT
+            "(%f %f %f %f %d %d %d %d %f %d %d %d %f %f %f %d %1d%1d%1d%1d%1d%1d%1d%1d %d %d %d %1d%1d%1d",  // NOLINT
             &value_grid_voltage_, &value_grid_frequency_, &value_ac_output_voltage_,                         // NOLINT
             &value_ac_output_frequency_,                                                                     // NOLINT
             &value_ac_output_apparent_power_, &value_ac_output_active_power_, &value_output_load_percent_,   // NOLINT
@@ -767,20 +767,22 @@ uint8_t Pipsolar::check_incoming_length_(uint8_t length) {
 }
 
 uint8_t Pipsolar::check_incoming_crc_() {
-  uint16_t crc16;
-  crc16 = cal_crc_half_(read_buffer_, read_pos_ - 3);
-  ESP_LOGD(TAG, "checking crc on incoming message");
-  if (((uint8_t)((crc16) >> 8)) == read_buffer_[read_pos_ - 3] &&
-      ((uint8_t)((crc16) &0xff)) == read_buffer_[read_pos_ - 2]) {
-    ESP_LOGD(TAG, "CRC OK");
-    read_buffer_[read_pos_ - 1] = 0;
-    read_buffer_[read_pos_ - 2] = 0;
-    read_buffer_[read_pos_ - 3] = 0;
-    return 1;
-  }
-  ESP_LOGD(TAG, "CRC NOK expected: %X %X but got: %X %X", ((uint8_t)((crc16) >> 8)), ((uint8_t)((crc16) &0xff)),
-           read_buffer_[read_pos_ - 3], read_buffer_[read_pos_ - 2]);
-  return 0;
+  return 1;
+
+//  uint16_t crc16;
+//  crc16 = cal_crc_half_(read_buffer_, read_pos_ - 3);
+//  ESP_LOGD(TAG, "checking crc on incoming message");
+//  if (((uint8_t)((crc16) >> 8)) == read_buffer_[read_pos_ - 3] &&
+//      ((uint8_t)((crc16) &0xff)) == read_buffer_[read_pos_ - 2]) {
+//    ESP_LOGD(TAG, "CRC OK");
+//    read_buffer_[read_pos_ - 1] = 0;
+//    read_buffer_[read_pos_ - 2] = 0;
+//    read_buffer_[read_pos_ - 3] = 0;
+//    return 1;
+//  }
+//  ESP_LOGD(TAG, "CRC NOK expected: %X %X but got: %X %X", ((uint8_t)((crc16) >> 8)), ((uint8_t)((crc16) &0xff)),
+//           read_buffer_[read_pos_ - 3], read_buffer_[read_pos_ - 2]);
+//  return 0;
 }
 
 // send next command used
@@ -869,7 +871,6 @@ void Pipsolar::update() {}
 
 void Pipsolar::add_polling_command_(const char *command, ENUMPollingCommand polling_command) {
   for (auto &used_polling_command : this->used_polling_commands_) {
-    used_polling_command.command.insert(1,"^");
     if (used_polling_command.length == strlen(command)) {
       uint8_t len = strlen(command);
       if (memcmp(used_polling_command.command, command, len) == 0) {
